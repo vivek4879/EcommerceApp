@@ -4,8 +4,11 @@ import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.CategoryService;
 import com.ecommerce.project.service.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +29,27 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
     @GetMapping("/api/public/Categories")
-    public List<Category> getCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<Category>> getCategories() {
+        return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
     }
     @PostMapping("/api/public/Categories")
-    public String addCategory(@RequestBody Category category){
+    public ResponseEntity<String> addCategory(@RequestBody Category category){
         categoryService.createCategory(category);
-        return "Category added successfully";
+        return new ResponseEntity<>( "Category added successfully",  HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/admin/Categories/{CategoryId}")
-    public String deleteCategory(@PathVariable Long CategoryId){
-        String status = categoryService.deleteCategory(CategoryId);
-        return status;
+    //ResponseEntity is a spring class that represents the entire HTTP response.Gives full control over HTTP response.
+    //Helps return custom status codes and error messages
+    public ResponseEntity<String> deleteCategory(@PathVariable Long CategoryId){
+        //try block contains code which might throw an exception
+        try{
+            String status = categoryService.deleteCategory(CategoryId);
+            return new ResponseEntity<>(status, HttpStatus.OK);
+            // catch executes only if an exception occurs in the try block
+        } catch(ResponseStatusException e){
+            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+        }
     }
+
 }
