@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController // tells Spring that this class is a web Controller, i.e. it will handle HTTP requests.
 // And the return value should be directly written to response body. Anything returned is automatically serialized to JSON.
+@RequestMapping("/api")
 public class CategoryController {
 
 
@@ -28,17 +29,17 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-    @GetMapping("/api/public/Categories")
+    @GetMapping("/public/Categories")
     public ResponseEntity<List<Category>> getCategories() {
         return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
     }
-    @PostMapping("/api/public/Categories")
+    @PostMapping("/public/Categories")
     public ResponseEntity<String> addCategory(@RequestBody Category category){
         categoryService.createCategory(category);
         return new ResponseEntity<>( "Category added successfully",  HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/api/admin/Categories/{CategoryId}")
+    @DeleteMapping("/admin/Categories/{CategoryId}")
     //ResponseEntity is a spring class that represents the entire HTTP response.Gives full control over HTTP response.
     //Helps return custom status codes and error messages
     public ResponseEntity<String> deleteCategory(@PathVariable Long CategoryId){
@@ -51,7 +52,7 @@ public class CategoryController {
             return new ResponseEntity<>(e.getReason(), e.getStatusCode());
         }
     }
-    @PutMapping("/api/public/Categories/{categoryId}")
+    @PutMapping("/public/Categories/{categoryId}")
     public ResponseEntity<String> updateCategory(@RequestBody Category category, @PathVariable Long categoryId){
         try{
             Category savedCategory = categoryService.updateCategory(category,categoryId);

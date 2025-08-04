@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public Category updateCategory(Category category, Long categoryId){
-        //Optional is a container object that may or may not contain a non null value
+        //Optional is a container object that may or may not contain a non-null value
         //used to safely handle missing values without null checks. helps avoid nullPointerException
         Optional<Category> optionalCategory =  categories.stream().filter(c -> c.getCategoryId()
                 .equals(categoryId)).findFirst();
