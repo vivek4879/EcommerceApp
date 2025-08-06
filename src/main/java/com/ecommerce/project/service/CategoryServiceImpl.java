@@ -18,7 +18,6 @@ public class CategoryServiceImpl implements CategoryService {
 //    private List<Category> categories = new ArrayList<>();
     @Autowired
     private  CategoryRepository categoryRepository;
-    private Long curIndex = 1L;
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -26,7 +25,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void createCategory(Category category){
-        category.setCategoryId(curIndex++);
         categoryRepository.save(category);
     }
 

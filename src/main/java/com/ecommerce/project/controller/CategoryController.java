@@ -29,17 +29,17 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-    @GetMapping("/public/Categories")
+    @GetMapping("/public/categories")
     public ResponseEntity<List<Category>> getCategories() {
         return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
     }
-    @PostMapping("/public/Categories")
+    @PostMapping("/public/categories")
     public ResponseEntity<String> addCategory(@RequestBody Category category){
         categoryService.createCategory(category);
         return new ResponseEntity<>( "Category added successfully",  HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/admin/Categories/{CategoryId}")
+    @DeleteMapping("/admin/categories/{CategoryId}")
     //ResponseEntity is a spring class that represents the entire HTTP response.Gives full control over HTTP response.
     //Helps return custom status codes and error messages
     public ResponseEntity<String> deleteCategory(@PathVariable Long CategoryId){
@@ -52,7 +52,7 @@ public class CategoryController {
             return new ResponseEntity<>(e.getReason(), e.getStatusCode());
         }
     }
-    @PutMapping("/public/Categories/{categoryId}")
+    @PutMapping("/public/categories/{categoryId}")
     public ResponseEntity<String> updateCategory(@RequestBody Category category, @PathVariable Long categoryId){
         try{
             Category savedCategory = categoryService.updateCategory(category,categoryId);
