@@ -3,6 +3,7 @@ package com.ecommerce.project.controller;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.CategoryService;
 import com.ecommerce.project.service.CategoryServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,10 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
     }
     @PostMapping("/public/categories")
-    public ResponseEntity<String> addCategory(@RequestBody Category category){
+    //the @Valid will do data validation in the request body itself so that the error is user friendly.
+    // We still have to put validation in the Category class. This Valid here is a Spring thing which  will check if the incoming
+    // request body is fulfilling the constraint defined in the model.
+    public ResponseEntity<String> addCategory(@Valid @RequestBody Category category){
         categoryService.createCategory(category);
         return new ResponseEntity<>( "Category added successfully",  HttpStatus.CREATED);
     }
@@ -53,7 +57,7 @@ public class CategoryController {
         }
     }
     @PutMapping("/public/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category, @PathVariable Long categoryId){
+    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category, @PathVariable Long categoryId){
         try{
             Category savedCategory = categoryService.updateCategory(category,categoryId);
             return new ResponseEntity<>("Updated Category with CategoryId: " + categoryId, HttpStatus.OK);
