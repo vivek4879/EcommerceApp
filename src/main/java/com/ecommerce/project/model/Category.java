@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class Category {
     //IDENTITY = DB auto increment
     //AUTO = JPA picks best strategy based on DB dialect. other strategies available
     Long CategoryId;
+    @Size(min = 5, message = "Category name must contain at least 5 characters")
     @NotBlank
     String CategoryName;
 //Removed getters, setters, constructors as Lombok the java library will do that for us
