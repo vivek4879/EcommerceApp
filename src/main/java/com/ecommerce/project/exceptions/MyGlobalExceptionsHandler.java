@@ -28,4 +28,11 @@ public class MyGlobalExceptionsHandler {
         });
         return new ResponseEntity<Map<String,String>>(response, HttpStatus.BAD_REQUEST);
     }
+
+    //this handler is intercepting all the ResourceNotFoundException in all the controllers
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> myResourceNotFoundException(ResourceNotFoundException e){
+        String response = e.getMessage();
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }
