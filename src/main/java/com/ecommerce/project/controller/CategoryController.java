@@ -48,22 +48,24 @@ public class CategoryController {
     //Helps return custom status codes and error messages
     public ResponseEntity<String> deleteCategory(@PathVariable Long CategoryId){
         //try block contains code which might throw an exception
-        try{
+        //commented try cath as we have implemented app vide exception handling
+//        try{
             String status = categoryService.deleteCategory(CategoryId);
             return new ResponseEntity<>(status, HttpStatus.OK);
             // catch executes only if an exception occurs in the try block
-        } catch(ResponseStatusException e){
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+//        } catch(ResponseStatusException e){
+//            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+//        }
     }
     @PutMapping("/public/categories/{categoryId}")
     public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category, @PathVariable Long categoryId){
-        try{
+//        try{
+//        commented try cath as we have implemented app vide exception handling
             Category savedCategory = categoryService.updateCategory(category,categoryId);
             return new ResponseEntity<>("Updated Category with CategoryId: " + categoryId, HttpStatus.OK);
-        }catch(ResponseStatusException e){
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+//        }catch(ResponseStatusException e){
+//            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+//        }
     }
 
 }
