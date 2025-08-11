@@ -24,7 +24,7 @@ public class Category {
     Long CategoryId;
     @Size(min = 5, message = "Category name must contain at least 5 characters")
     @NotBlank
-    String CategoryName;
+    String categoryName;
 //Removed getters, setters, constructors as Lombok the java library will do that for us
 //    public Category() {}
 //    public Category(Long CategoryId, String CategoryName) {
