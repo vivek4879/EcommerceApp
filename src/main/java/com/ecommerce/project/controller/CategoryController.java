@@ -6,6 +6,7 @@ import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.service.CategoryService;
 import com.ecommerce.project.service.CategoryServiceImpl;
 import jakarta.validation.Valid;
+import org.hibernate.annotations.Parameter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,9 +35,12 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
+
+
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> getCategories() {
-        CategoryResponse categoryResponse =  categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getCategories(@RequestParam (name = "pageNumber") Integer pageNumber,
+                                                          @RequestParam( name = "pageSize") Integer pageSize) {
+        CategoryResponse categoryResponse =  categoryService.getAllCategories(pageNumber, pageSize);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
     @PostMapping("/public/categories")
@@ -51,11 +55,11 @@ public class CategoryController {
     @DeleteMapping("/admin/categories/{CategoryId}")
     //ResponseEntity is a spring class that represents the entire HTTP response.Gives full control over HTTP response.
     //Helps return custom status codes and error messages
-    public ResponseEntity<String> deleteCategory(@PathVariable Long CategoryId){
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long CategoryId){
         //try block contains code which might throw an exception
         //commented try cath as we have implemented app vide exception handling
 //        try{
-            String status = categoryService.deleteCategory(CategoryId);
+            CategoryDTO status = categoryService.deleteCategory(CategoryId);
             return new ResponseEntity<>(status, HttpStatus.OK);
             // catch executes only if an exception occurs in the try block
 //        } catch(ResponseStatusException e){
@@ -63,11 +67,11 @@ public class CategoryController {
 //        }
     }
     @PutMapping("/public/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId){
+    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId){
 //        try{
 //        commented try cath as we have implemented app vide exception handling
             CategoryDTO savedCategory = categoryService.updateCategory(categoryDTO,categoryId);
-            return new ResponseEntity<>("Updated Category with CategoryId: " + categoryId, HttpStatus.OK);
+            return new ResponseEntity<>(savedCategory, HttpStatus.OK);
 //        }catch(ResponseStatusException e){
 //            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
 //        }

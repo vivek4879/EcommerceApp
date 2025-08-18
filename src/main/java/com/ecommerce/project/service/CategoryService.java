@@ -8,8 +8,8 @@ import java.util.List;
 
 //can make this as class too, but using Interface to promote loose coupling and modularity in codebase.
 public interface CategoryService {
-    CategoryResponse getAllCategories();
+    CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize);
     CategoryDTO createCategory(CategoryDTO category);
-    String deleteCategory(Long CategoryId);
+    CategoryDTO deleteCategory(Long CategoryId);
     CategoryDTO updateCategory(CategoryDTO categoryDTO, Long CategoryId);
 }

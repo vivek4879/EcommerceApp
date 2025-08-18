@@ -8,6 +8,9 @@ import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.repositories.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +30,13 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public CategoryResponse getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
+    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize) {
+        //first we create a  pageable object
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize);
+        //categoryPage is a paginated object that JPA is getting us  based on the
+        // page number and size that the user has provided
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+        List<Category> categories = categoryPage.getContent();
         if (categories.isEmpty()) {
             throw new APIException("No Categories Added yet");
         }
@@ -56,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     //we use stream here because a normal traversal to delete on the go will result in concurrentModificationException
-    public String deleteCategory(Long CategoryId){
+    public CategoryDTO deleteCategory(Long CategoryId){
 
         Optional<Category> categoryToDeleteOptional = categoryRepository.findById(CategoryId);
 
@@ -70,7 +78,8 @@ public class CategoryServiceImpl implements CategoryService {
 //                .findFirst()
 //                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 //        categoryRepository.delete(category);
-        return "Category with categoryId: " + CategoryId + " deleted";
+        CategoryDTO deletedCategoryDTO =  modelMapper.map(categoryToDelete, CategoryDTO.class);
+        return deletedCategoryDTO;
     }
 
     public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId){
