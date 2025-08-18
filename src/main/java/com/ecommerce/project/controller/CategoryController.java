@@ -1,10 +1,12 @@
 package com.ecommerce.project.controller;
 
 import com.ecommerce.project.model.Category;
+import com.ecommerce.project.payload.CategoryDTO;
 import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.service.CategoryService;
 import com.ecommerce.project.service.CategoryServiceImpl;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ public class CategoryController {
 
 
     private CategoryService categoryService;//created object of service
+    private ModelMapper modelMapper;
 
     //expecting Spring to inject on runtime and for spring to inject, it has to manage the categoryService bean.
     // For that need to add some annotation for spring to know that it is supposed to manage it in the categoryServiceImpl class
@@ -40,9 +43,9 @@ public class CategoryController {
     //the @Valid will do data validation in the request body itself so that the error is user friendly.
     // We still have to put validation in the Category class. This Valid here is a Spring thing which  will check if the incoming
     // request body is fulfilling the constraint defined in the model.
-    public ResponseEntity<String> addCategory(@Valid @RequestBody Category category){
-        categoryService.createCategory(category);
-        return new ResponseEntity<>( "Category added successfully",  HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> addCategory(@Valid @RequestBody CategoryDTO categoryDTO){
+        CategoryDTO savedCategoryDTO = categoryService.createCategory(categoryDTO);
+        return new ResponseEntity<>( savedCategoryDTO,  HttpStatus.CREATED);
     }
 
     @DeleteMapping("/admin/categories/{CategoryId}")
@@ -60,10 +63,10 @@ public class CategoryController {
 //        }
     }
     @PutMapping("/public/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category, @PathVariable Long categoryId){
+    public ResponseEntity<String> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId){
 //        try{
 //        commented try cath as we have implemented app vide exception handling
-            Category savedCategory = categoryService.updateCategory(category,categoryId);
+            CategoryDTO savedCategory = categoryService.updateCategory(categoryDTO,categoryId);
             return new ResponseEntity<>("Updated Category with CategoryId: " + categoryId, HttpStatus.OK);
 //        }catch(ResponseStatusException e){
 //            return new ResponseEntity<>(e.getReason(), e.getStatusCode());

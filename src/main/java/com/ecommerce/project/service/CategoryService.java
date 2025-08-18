@@ -9,7 +9,7 @@ import java.util.List;
 //can make this as class too, but using Interface to promote loose coupling and modularity in codebase.
 public interface CategoryService {
     CategoryResponse getAllCategories();
-    void createCategory(Category category);
+    CategoryDTO createCategory(CategoryDTO category);
     String deleteCategory(Long CategoryId);
-    Category updateCategory(Category category, Long CategoryId);
+    CategoryDTO updateCategory(CategoryDTO categoryDTO, Long CategoryId);
 }

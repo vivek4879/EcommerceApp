@@ -42,12 +42,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void createCategory(Category category){
-        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
-        if(savedCategory != null){
+    public CategoryDTO createCategory(CategoryDTO categoryDTO){
+        Category category = modelMapper.map(categoryDTO, Category.class);
+        Category categoryFromDb = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(categoryFromDb != null){
             throw new APIException("Category with the name " + category.getCategoryName() + " already exists!");
         }
-        categoryRepository.save(category);
+        //save returns the saved object so we are storing it here.
+        Category savedCategory = categoryRepository.save(category);
+        CategoryDTO savedCategoryDTO =  modelMapper.map(savedCategory, CategoryDTO.class);
+        return savedCategoryDTO;
     }
 
     @Override
@@ -69,16 +73,17 @@ public class CategoryServiceImpl implements CategoryService {
         return "Category with categoryId: " + CategoryId + " deleted";
     }
 
-    public Category updateCategory(Category category, Long categoryId){
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId){
         //Optional is a container object that may or may not contain a non-null value
         //used to safely handle missing values without null checks. helps avoid nullPointerException
         Optional<Category> savedCategoryOptional = categoryRepository.findById(categoryId);
 
         Category categoryToUpdate = savedCategoryOptional
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "Category",  categoryId));
+        Category category = modelMapper.map(categoryDTO, Category.class);
         categoryToUpdate.setCategoryName(category.getCategoryName());
         categoryToUpdate = categoryRepository.save(categoryToUpdate);
-        return categoryToUpdate;
+        return modelMapper.map(categoryToUpdate, CategoryDTO.class);
 
     }
 }
