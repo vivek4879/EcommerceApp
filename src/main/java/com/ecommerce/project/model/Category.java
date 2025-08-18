@@ -21,7 +21,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //tells JPA that let DB handle auto incrementing this column
     //IDENTITY = DB auto increment
     //AUTO = JPA picks best strategy based on DB dialect. other strategies available
-    Long CategoryId;
+    Long categoryId;
     @Size(min = 5, message = "Category name must contain at least 5 characters")
     @NotBlank
     String categoryName;
