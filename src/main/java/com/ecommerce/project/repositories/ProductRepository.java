@@ -14,4 +14,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // it will also derive the query to trigger to the database based on the naming itself.
     //just by looking at the method name, JPA knows what to do.
     List<Product> findByCategoryOrderByPriceAsc(Category category);
+
+    //findBy -> means its a select query
+    //ProductName -> so search by product name
+    //Like -> do pattern matching
+    //Ignore Case -> ignore the case while pattern matching
+    List<Product> findByProductNameLikeIgnoreCase(String keyword);
 }

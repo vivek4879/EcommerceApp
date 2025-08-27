@@ -60,8 +60,21 @@ public class ProductServiceImpl implements ProductService{
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOS);
         return productResponse;
+    }
 
-
-
+    @Override
+    public ProductResponse searchProductByKeyword(String keyword) {
+        //Spring Data expects you to supply wildCards yourself
+        //because we used Like semantics, in SQL % is the wildCard for any sequence of characters.
+        //%keyword% -> contains keyword anywhere
+        //keyword% -> starts with keyword
+        //%keyword -> ends with keyword
+        // no % -> behaves like an exact match
+        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%');
+//        List<Product> products = productRepository.findByProductNameLikeIgnoreCase(keyword );
+        List<ProductDTO> productDTOS = products.stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(productDTOS);
+        return productResponse;
     }
 }
