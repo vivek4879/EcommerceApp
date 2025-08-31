@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -28,17 +27,18 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public ProductDTO addProduct(Long categoryId, Product product){
+    public ProductDTO addProduct(Long categoryId, ProductDTO productDTO){
         Category category = categoryRepository.findById(categoryId).
                 orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+
+        Product product = modelMapper.map(productDTO, Product.class);
         product.setImage("default.png");
         product.setCategory(category);
         double specialPrice = product.getPrice()-
                 (product.getDiscount() * 0.01) * product.getPrice();
         product.setSpecialPrice(specialPrice);
         Product savedProduct = productRepository.save(product);
-        ProductDTO productDTO = modelMapper.map(savedProduct, ProductDTO.class);
-        return productDTO;
+        return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
     @Override
@@ -79,10 +79,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductDTO updateProduct(Long productId, Product product) {
+    public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
         //get existing product from DB
         Product productFromDb = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
+        Product product =  modelMapper.map(productDTO, Product.class);
         //update product info with the one in the request Body.
         productFromDb.setProductName(product.getProductName());
         productFromDb.setDescription(product.getDescription());
@@ -95,7 +96,14 @@ public class ProductServiceImpl implements ProductService{
         Product savedProduct = productRepository.save(productFromDb);
 
         //Converting Saved product to poductDTO class using model mapper
-        ProductDTO productDTO = modelMapper.map(savedProduct, ProductDTO.class);
-        return productDTO;
+        return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO deleteProduct(Long productId) {
+        Product productFromDB =  productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+        productRepository.deleteById(productId);
+        ProductDTO deletedProductDTO = modelMapper.map(productFromDB, ProductDTO.class);
+        return deletedProductDTO;
     }
 }
